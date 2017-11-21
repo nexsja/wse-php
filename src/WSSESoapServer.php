@@ -55,6 +55,9 @@ class WSSESoapServer
     const WSUNS = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd';
     const WSSEPFX = 'wsse';
     const WSUPFX = 'wsu';
+
+    protected $trustCertificate = false;
+
     private $soapNS, $soapPFX;
     private $soapDoc = null;
     private $envelope = null;
@@ -103,6 +106,12 @@ class WSSESoapServer
         }
     }
 
+    public function setTrustCertificate($trust)
+    {
+        $this->trustCertificate = $trust;
+        return $this;
+    }
+
     public function processSignature($refNode)
     {
         $objXMLSecDSig = new XMLSecurityDSig();
@@ -146,10 +155,12 @@ class WSSESoapServer
                                 $x509cert = $encmeth->textContent;
                                 $x509cert = str_replace(array("\r", "\n"), '', $x509cert);
                                 $x509cert = "-----BEGIN CERTIFICATE-----\n".chunk_split($x509cert, 64, "\n")."-----END CERTIFICATE-----\n";
-                                $objKey->loadKey($x509cert);
+                                $objKey->loadKey($x509cert, false, true, $this->trustCertificate);
                                 break;
                             }
                         }
+
+
                     }
                 }
                 throw new Exception('Error loading key to handle Signature');
