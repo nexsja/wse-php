@@ -124,10 +124,10 @@ class WSSESoap
         $timestamp = $this->soapDoc->createElementNS(self::WSUNS, self::WSUPFX.':Timestamp');
         $security->insertBefore($timestamp, $security->firstChild);
         $currentTime = time();
-        $created = $this->soapDoc->createElementNS(self::WSUNS,  self::WSUPFX.':Created', gmdate("Y-m-d\TH:i:s", $currentTime).'Z');
+        $created = $this->soapDoc->createElementNS(self::WSUNS,  self::WSUPFX.':Created', date("Y-m-d\TH:i:s", $currentTime));
         $timestamp->appendChild($created);
         if (!is_null($secondsToExpire)) {
-            $expire = $this->soapDoc->createElementNS(self::WSUNS,  self::WSUPFX.':Expires', gmdate("Y-m-d\TH:i:s", $currentTime + $secondsToExpire).'Z');
+            $expire = $this->soapDoc->createElementNS(self::WSUNS,  self::WSUPFX.':Expires', date("Y-m-d\TH:i:s", $currentTime + $secondsToExpire));
             $timestamp->appendChild($expire);
         }
     }
